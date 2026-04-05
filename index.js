@@ -21,7 +21,6 @@ async function checkSite() {
 
       const texto = title.toLowerCase();
 
-      // filtra só capítulos
       if (
         (texto.includes("cap") || texto.includes("chapter")) &&
         link.includes("manga")
@@ -69,8 +68,8 @@ async function checkSite() {
         }
 
         await axios.post(WEBHOOK_URL, {
-          content:
-`📢 Atualização
+          username: "alice",
+          content: `📢 Atualização
 Acabou de sair o capítulo ${numero}
 Obra: ${nome}
 Leia: ${cap.link}`
