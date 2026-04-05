@@ -4,7 +4,7 @@ const cheerio = require("cheerio");
 const WEBHOOK_URL = process.env.WEBHOOK_URL;
 const SITE_URL = "https://mangasbrasuka.com.br/";
 
-let vistos = new Set();
+let vistos = new Set([test]);
 
 async function checkSite() {
   try {
