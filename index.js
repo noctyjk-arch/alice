@@ -56,6 +56,7 @@ async function checkSite() {
     }
 
     const recentes = únicos.slice(0, 10);
+console.log(recentes);
 
     // primeira execução
     if (vistos.size === 0) {
