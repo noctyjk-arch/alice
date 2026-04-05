@@ -61,7 +61,7 @@ async function checkSite() {
         await axios.post(WEBHOOK_URL, {
           username: "alice",
           content: `📢 Atualização
-Acabou de sair o capítulo ${cap.numero}
+Acabou de sair ${cap.numero}
 Obra: ${cap.nome}
 Leia: ${cap.link}`
         });
