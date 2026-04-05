@@ -14,16 +14,18 @@ async function checkSite() {
     let caps = [];
 
     $("a").each((i, el) => {
-      const title = $(el).text().trim();
+      const title = $(el).text().replace(/\s+/g, " ").trim();
       const link = $(el).attr("href");
 
       if (!title || !link) return;
 
       const texto = title.toLowerCase();
 
+      // filtro melhorado
       if (
         (texto.includes("cap") || texto.includes("chapter")) &&
-        link.includes("manga")
+        /\d+/.test(texto) &&
+        link.includes("capitulo")
       ) {
         caps.push({
           title,
@@ -60,7 +62,8 @@ async function checkSite() {
         let nome = cap.title;
         let numero = "";
 
-        const match = cap.title.match(/(.*?)(cap[^\d]*\d+.*)/i);
+        // separação melhorada
+        const match = cap.title.match(/(.+?)\s*(cap[^\d]*\d+)/i);
 
         if (match) {
           nome = match[1].trim();
