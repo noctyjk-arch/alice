@@ -14,21 +14,32 @@ async function checkSite() {
     let caps = [];
 
     $("a").each((i, el) => {
-      const title = $(el).text().replace(/\s+/g, " ").trim();
       const link = $(el).attr("href");
+      if (!link) return;
 
-      if (!title || !link) return;
+      // só links de capítulo reais
+      if (link.includes("/capitulo-")) {
 
-      const texto = title.toLowerCase();
+        const fullLink = link.startsWith("http")
+          ? link
+          : SITE_URL + link;
 
-      // filtro corrigido
-      if (
-        (texto.includes("cap") || texto.includes("chapter")) &&
-        /\d+/.test(texto)
-      ) {
+        // extrai nome da obra pelo link
+        const partes = fullLink.split("/manga/")[1]?.split("/");
+        if (!partes) return;
+
+        const nome = partes[0]
+          .replace(/-/g, " ")
+          .replace(/\b\w/g, l => l.toUpperCase());
+
+        // extrai número do capítulo
+        const capMatch = fullLink.match(/capitulo-(\d+)/i);
+        const numero = capMatch ? `Capítulo ${capMatch[1]}` : "";
+
         caps.push({
-          title,
-          link: link.startsWith("http") ? link : SITE_URL + link
+          nome,
+          numero,
+          link: fullLink
         });
       }
     });
@@ -58,26 +69,15 @@ async function checkSite() {
     if (novos.length > 0) {
       for (const cap of novos) {
 
-        let nome = cap.title;
-        let numero = "";
-
-        // separação melhorada
-        const match = cap.title.match(/(.+?)\s*(cap[^\d]*\d+)/i);
-
-        if (match) {
-          nome = match[1].trim();
-          numero = match[2].trim();
-        }
-
         await axios.post(WEBHOOK_URL, {
           username: "alice",
           content: `📢 Atualização
-Acabou de sair o capítulo ${numero}
-Obra: ${nome}
+Acabou de sair o capítulo ${cap.numero}
+Obra: ${cap.nome}
 Leia: ${cap.link}`
         });
 
-        console.log("Enviado:", cap.title);
+        console.log("Enviado:", cap.nome, cap.numero);
       }
 
       vistos = new Set(recentes.map(c => c.link));
@@ -90,8 +90,5 @@ Leia: ${cap.link}`
   }
 }
 
-// intervalo (5 minutos)
 setInterval(checkSite, 5 * 60 * 1000);
-
-// inicia
 checkSite();
