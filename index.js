@@ -21,11 +21,10 @@ async function checkSite() {
 
       const texto = title.toLowerCase();
 
-      // filtro melhorado
+      // filtro corrigido
       if (
         (texto.includes("cap") || texto.includes("chapter")) &&
-        /\d+/.test(texto) &&
-        link.includes("capitulo")
+        /\d+/.test(texto)
       ) {
         caps.push({
           title,
