@@ -17,14 +17,12 @@ async function checkSite() {
       const link = $(el).attr("href");
       if (!link) return;
 
-      // só links de capítulo reais
       if (link.includes("/capitulo-")) {
 
         const fullLink = link.startsWith("http")
           ? link
           : SITE_URL + link;
 
-        // extrai nome da obra pelo link
         const partes = fullLink.split("/manga/")[1]?.split("/");
         if (!partes) return;
 
@@ -32,15 +30,10 @@ async function checkSite() {
           .replace(/-/g, " ")
           .replace(/\b\w/g, l => l.toUpperCase());
 
-        // extrai número do capítulo
         const capMatch = fullLink.match(/capitulo-(\d+)/i);
         const numero = capMatch ? `Capítulo ${capMatch[1]}` : "";
 
-        caps.push({
-          nome,
-          numero,
-          link: fullLink
-        });
+        caps.push({ nome, numero, link: fullLink });
       }
     });
 
@@ -56,16 +49,11 @@ async function checkSite() {
     }
 
     const recentes = únicos.slice(0, 10);
-console.log(recentes);
 
-    // primeira execução
-    if (vistos.size === 0) {
-      recentes.forEach(c => vistos.add(c.link));
-      console.log("Inicializado.");
-      return;
-    }
+    console.log("Detectados:", recentes);
 
-    const novos = recentes.filter(c => !vistos.has(c.link));
+    // 🔥 FORÇA ENVIO (modo teste)
+    const novos = recentes;
 
     if (novos.length > 0) {
       for (const cap of novos) {
