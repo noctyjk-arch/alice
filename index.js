@@ -5,6 +5,7 @@ const WEBHOOK_URL = process.env.WEBHOOK_URL;
 const SITE_URL = "https://mangasbrasuka.com.br/";
 
 let vistos = new Set();
+let inicializado = false;
 
 async function checkSite() {
   try {
@@ -50,10 +51,15 @@ async function checkSite() {
 
     const recentes = únicos.slice(0, 10);
 
-    console.log("Detectados:", recentes);
+    // primeira execução (não envia nada)
+    if (!inicializado) {
+      recentes.forEach(c => vistos.add(c.link));
+      inicializado = true;
+      console.log("Inicializado sem enviar.");
+      return;
+    }
 
-    // 🔥 FORÇA ENVIO (modo teste)
-    const novos = recentes;
+    const novos = recentes.filter(c => !vistos.has(c.link));
 
     if (novos.length > 0) {
       for (const cap of novos) {
@@ -61,9 +67,9 @@ async function checkSite() {
         await axios.post(WEBHOOK_URL, {
           username: "alice",
           content: `📢 Atualização
-Acabou de sair o ${cap.numero}
+Acabou de sair ${cap.numero}
 Obra: ${cap.nome}
-Disponível para ler em: ${cap.link}`
+Leia: ${cap.link}`
         });
 
         console.log("Enviado:", cap.nome, cap.numero);
