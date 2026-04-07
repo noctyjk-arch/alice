@@ -27,14 +27,15 @@ async function checkSite() {
         const partes = fullLink.split("/manga/")[1]?.split("/");
         if (!partes) return;
 
-        const nome = partes[0]
-          .replace(/-/g, " ")
-          .replace(/\b\w/g, l => l.toUpperCase());
+        // 🔥 PADRONIZAÇÃO
+        const nomeBase = partes[0].replace(/-/g, " ");
+        const nome = nomeBase.toLowerCase(); // usado internamente
+        const nomeBonito = nomeBase.replace(/\b\w/g, l => l.toUpperCase()); // exibição
 
         const capMatch = fullLink.match(/capitulo-(\d+)/i);
         const numero = capMatch ? `Capítulo ${capMatch[1]}` : "";
 
-        caps.push({ nome, numero, link: fullLink });
+        caps.push({ nome, nomeBonito, numero, link: fullLink });
       }
     });
 
@@ -68,7 +69,7 @@ async function checkSite() {
           username: "alice",
           content: `📢 Atualização
 Acabou de sair o ${cap.numero} da
-Obra: ${cap.nome}
+Obra: ${cap.nomeBonito}
 Está disponível para ler em: ${cap.link}`
         });
 
